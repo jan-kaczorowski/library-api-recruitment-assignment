@@ -1,0 +1,34 @@
+# Created for Rails API app
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore local master key and credentials
+/config/master.key
+/config/credentials/*.key
+
+# Ignore logs and temp files.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore uploaded files in development or test.
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+
+# Ignore pidfiles and cache.
+/tmp/pids/*
+/tmp/cache/*
+
+# Ignore coverage reports
+/coverage/
+
+# Ignore node/yarn artifacts if ever added
+/node_modules/
+/yarn-error.log
+
+# Ignore OS/system files
+.DS_Store

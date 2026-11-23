@@ -180,21 +180,3 @@ docker compose exec api bin/rubocop
 - **Serialization.** [Alba](https://github.com/okuramasafumi/alba) resources in
   `app/resources/`.
 
-## Limitations and ideas for improvement
-
-- **No authentication or authorization**, as allowed by the task.
-- **Development setup only.** Docker Compose runs Rails in development mode, with code
-  mounted from the host. A production setup would need its own image, configuration
-  and real email delivery (SMTP or a provider).
-- **No pagination or filtering** on lists.
-- **Readers can only be listed and created.** Updating, deleting and per-reader loan
-  history are not implemented.
-- **Card numbers are random.** If two readers are created at the same moment with the
-  same random number, the second request gets 409 and has to be retried. A database
-  sequence, as used for serial numbers, would remove this.
-- **Serial numbers run out at 999 999**, about 900k copies. After that, the sequence
-  raises an error.
-- **No overdue handling.** After the due date there are no further reminders, fines or
-  loan extensions.
-- **No API documentation file.** An OpenAPI spec (e.g. via rswag from the request
-  specs) would make the API easier to explore.

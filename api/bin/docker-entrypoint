@@ -1,7 +1,11 @@
 #!/bin/bash -e
 
+# Remove a stale pid file left in the bind-mounted tmp/ (container pid is always 1,
+# so Rails would otherwise think a server is already running)
+rm -f tmp/pids/server.pid
+
 # If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+if [ "$1" == "./bin/rails" ] && [ "$2" == "server" ]; then
   ./bin/rails db:prepare
 fi
 

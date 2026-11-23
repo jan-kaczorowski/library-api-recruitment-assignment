@@ -15,7 +15,8 @@ class Reader < ApplicationRecord
                             less_than_or_equal_to: CARD_RANGE.end
                         },
             uniqueness: true
-  validates :email, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true,
+                    format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
 
   private
 

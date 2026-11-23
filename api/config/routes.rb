@@ -7,4 +7,18 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  scope :api do
+    resources :book_copies, only: %i[index create show update destroy] do
+      # POST /book_copies/:book_copy_id/loans  -> loans#create
+      resources :loans, only: :create
+    end
+
+    resources :loans, only: %i[index]
+
+    resources :readers, only: %i[index create]
+
+    # PUT /loans/:id/return  -> loans#return_book
+    put "loans/:id/return", to: "loans#return_book", as: :return_loan
+  end
 end

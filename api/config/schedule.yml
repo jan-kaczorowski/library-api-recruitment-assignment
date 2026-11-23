@@ -1,0 +1,5 @@
+# sidekiq-cron loads this file on Sidekiq startup
+loan_reminders:
+  cron: "0 8 * * * Europe/Warsaw" # every day at 08:00 local time (sidekiq-cron ignores config.time_zone)
+  class: "LoanRemindersJob"
+  queue: default

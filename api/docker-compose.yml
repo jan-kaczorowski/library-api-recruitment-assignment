@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   postgres:
-    image: postgres:16
+    image: postgres:17
     container_name: library-api-postgres
     environment:
       POSTGRES_USER: postgres
@@ -16,14 +14,28 @@ services:
       timeout: 5s
       retries: 10
 
-  api:
+  redis:
+    image: redis:7
+    container_name: library-api-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api: &app
     build:
       context: .
       dockerfile: Dockerfile.dev
+    image: library-api-dev
     container_name: library-api
     environment:
       RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/app_development
+      # No database name: each env takes it from database.yml (app_development / app_test)
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432
+      REDIS_URL: redis://redis:6379/0
+      # letter_opener saves emails to tmp/letter_opener; don't try to open a browser
+      LAUNCHY_DRY_RUN: "true"
       # Ensure Rails logs to STDOUT in containers
       RAILS_LOG_TO_STDOUT: "1"
     ports:
@@ -31,8 +43,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - .:/app
+
+  sidekiq:
+    <<: *app
+    container_name: library-api-sidekiq
+    command: ["bundle", "exec", "sidekiq"]
+    ports: []
 
 volumes:
   pgdata:

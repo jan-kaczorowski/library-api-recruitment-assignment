@@ -1,0 +1,4 @@
+# Lets `docker compose up` run from the repository root.
+# Services are defined in api/docker-compose.yml (paths there are relative to api/).
+include:
+  - api/docker-compose.yml

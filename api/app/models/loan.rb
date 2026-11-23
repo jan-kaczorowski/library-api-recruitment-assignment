@@ -1,4 +1,6 @@
 class Loan < ApplicationRecord
+  PERIOD = 30.days
+
   belongs_to :book_copy
   belongs_to :reader
 
@@ -10,6 +12,10 @@ class Loan < ApplicationRecord
 
   # Application-level safety net; DB enforces this with a partial unique index
   validates :book_copy_id, uniqueness: { conditions: -> { where(returned_at: nil) }, message: "already has an open loan" }, if: -> { returned_at.nil? }
+
+  def return!(at: Time.current)
+    update!(returned_at: at)
+  end
 
   private
 

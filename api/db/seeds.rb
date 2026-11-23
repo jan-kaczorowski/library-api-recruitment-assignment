@@ -1,20 +1,21 @@
 # Seed data for development: Polish classics, a few readers, and multiple copies for some books.
 # This is idempotent: uses find_or_create_by / find_or_initialize_by on stable keys.
+# Copy serial numbers are not hard-coded: book_copies_serial_number_seq assigns them,
+# so seeded serials never collide with copies added later through the API.
 
 books = [
-  { title: "Lalka", author: "Bolesław Prus", copies: [100001, 100002] },
-  { title: "Pan Tadeusz", author: "Adam Mickiewicz", copies: [100003, 100004, 100005] },
-  { title: "Quo Vadis", author: "Henryk Sienkiewicz", copies: [100006] },
-  { title: "Ferdydurke", author: "Witold Gombrowicz", copies: [100007] },
-  { title: "Solaris", author: "Stanisław Lem", copies: [100008] }
+  { title: "Lalka", author: "Bolesław Prus", copies: 2 },
+  { title: "Pan Tadeusz", author: "Adam Mickiewicz", copies: 3 },
+  { title: "Quo Vadis", author: "Henryk Sienkiewicz", copies: 1 },
+  { title: "Ferdydurke", author: "Witold Gombrowicz", copies: 1 },
+  { title: "Solaris", author: "Stanisław Lem", copies: 1 }
 ]
 
 ActiveRecord::Base.transaction do
   books.each do |attrs|
     book = Book.find_or_create_by!(title: attrs[:title], author: attrs[:author])
-    attrs[:copies].each do |serial|
-      BookCopy.find_or_create_by!(book: book, serial_number: serial)
-    end
+    missing = attrs[:copies] - book.book_copies.count
+    missing.times { book.book_copies.create! }
   end
 
   [

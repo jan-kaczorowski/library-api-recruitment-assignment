@@ -12,7 +12,7 @@ class CreateLoans < ActiveRecord::Migration[8.1]
 
       t.check_constraint "returned_at IS NULL OR returned_at >= borrowed_at",
         name: "loans_return_after_checkout"
-      t.index [:book_copy_id, :borrowed_at]
+      t.index [ :book_copy_id, :borrowed_at ]
       t.index :book_copy_id, unique: true, where: "returned_at IS NULL",
         name: "idx_loans_one_open_per_copy"
       t.index :due_on, where: "returned_at IS NULL",
